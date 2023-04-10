@@ -21,16 +21,7 @@ The input file must be a valid JSON file containing an array of flight objects. 
   **Example:**
 
   ```
-  [
-  {
-  "source": "ATL",
-  "destination": "EWR"
-  },
-  {
-  "source": "SFO",
-  "destination": "ATL"
-  }
-  ]
+   [["IND", "EWR"], ["SFO", "ATL"], ["GSO", "IND"], ["ATL", "GSO"]] 
   ```
 
 ## Output format
@@ -38,12 +29,7 @@ The input file must be a valid JSON file containing an array of flight objects. 
 The program outputs the starting and ending airports of the total flight path travelled:
 
 ```
-{
-     "flightPath": { 
-          "source": "SFO",
-          "destination": "EWR" 
-      }
-}
+"SFO", "EWR"]
 ```
 
 ## Error handling

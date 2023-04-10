@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"flight-route-calculator/models"
 )
 
 var (
@@ -10,48 +9,47 @@ var (
 	Destination = "destination"
 )
 
-func CalculateFlightPath(flights []models.Flight) (models.Flight, error) {
+func CalculateFlightPath(flightRoutes [][]string) ([]string, error) {
+
 	AirportMap := make(map[string]string)
 
-	//finding ports that appears only once in input slice
-	for _, flight := range flights {
-		if _, ok := AirportMap[flight.Source]; ok {
-			AirportMap[flight.Source] = ""
+	//finding ports that appears only once in input request
+	for _, flightRoute := range flightRoutes {
+		source, destination := flightRoute[0], flightRoute[1]
+		if _, ok := AirportMap[source]; ok {
+			AirportMap[source] = ""
 		} else {
-			AirportMap[flight.Source] = Source
+			AirportMap[source] = Source
 		}
-		if _, ok := AirportMap[flight.Destination]; ok {
-			AirportMap[flight.Destination] = ""
+		if _, ok := AirportMap[destination]; ok {
+			AirportMap[destination] = ""
 		} else {
-			AirportMap[flight.Destination] = Destination
+			AirportMap[destination] = Destination
 		}
-
 	}
+
 	var startPort string
 	var endPort string
-	// checking the value of ports that appears only once. if more than one source and destination values exists , then input is invalid
+	// checking the ports that appears only once. if more than one source and destination port exists, then input is invalid
 	for key := range AirportMap {
 		switch AirportMap[key] {
 		case Source:
 			if startPort != "" {
-				return models.Flight{}, errors.New("invalid input, more than one starting ports found")
+				return nil, errors.New("invalid input, more than one starting ports found")
 			}
 			startPort = key
 		case Destination:
 			if endPort != "" {
-				return models.Flight{}, errors.New("invalid input, more than one ending ports found")
+				return nil, errors.New("invalid input, more than one ending ports found")
 			}
 			endPort = key
 		}
 	}
 
 	if startPort == "" || endPort == "" {
-		return models.Flight{}, errors.New("invalid input, starting or ending ports not found")
+		return nil, errors.New("invalid input, starting or ending ports not found")
 	}
 
 	// Return the starting and ending ports.
-	return models.Flight{
-		Source:      startPort,
-		Destination: endPort,
-	}, nil
+	return []string{startPort, endPort}, nil
 }
